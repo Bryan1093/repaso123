@@ -72,5 +72,19 @@ export default {
     },
     getAllCitas() {
         return resourceClient.get('/citas');
+    },
+
+    getAllPacientes() {
+        return resourceClient.get('/pacientes');
+    },
+
+    getPacienteByUrl(url) {
+        // Al ser una URL completa (HATEOAS), usamos axios directamente con el token
+        return axios.get(url, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Accept': 'application/json'
+            }
+        });
     }
 };

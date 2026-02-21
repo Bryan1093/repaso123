@@ -7,7 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
 @ApplicationScoped
-public class PacienteRepositoryImpl implements PacienteRepository, PanacheRepositoryBase<Paciente, String> {
+public class PacienteRepositoryImpl implements PacienteRepository, PanacheRepositoryBase<Paciente, Integer> {
 
     @Override
     public void create(Paciente paciente) {
@@ -15,8 +15,18 @@ public class PacienteRepositoryImpl implements PacienteRepository, PanacheReposi
     }
 
     @Override
+    public void createAndFlush(Paciente paciente) {
+        persistAndFlush(paciente);
+    }
+
+    @Override
+    public Paciente findById(Integer id) {
+        return findByIdOptional(id).orElse(null);
+    }
+
+    @Override
     public Paciente findByCedula(String cedula) {
-        return findById(cedula);
+        return find("cedula", cedula).firstResult();
     }
 
     @Override

@@ -3,16 +3,23 @@ import DoctorView from '../views/DoctorView.vue';
 import PacienteView from '../views/PacienteView.vue';
 import CitasView from '../views/CitasView.vue';
 import LoginView from '../views/LoginView.vue';
+import HomeView from '../views/HomeView.vue';
 
 const routes = [
     {
         path: '/',
-        redirect: '/login'
+        redirect: '/home'
     },
     {
         path: '/login',
         name: 'Login',
         component: LoginView
+    },
+    {
+        path: '/home',
+        name: 'Home',
+        component: HomeView,
+        meta: { requiresAuth: true }
     },
     {
         path: '/doctor',

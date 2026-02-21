@@ -20,6 +20,15 @@ public class UsuarioService {
             return null;
         }
 
+        // Si la contraseña guardada no tiene el formato de hash de BCrypt, comparar
+        // como texto plano
+        if (!usuario.getPassword().startsWith("$2a$")) {
+            if (usuario.getPassword().equals(password)) {
+                return usuario;
+            }
+            return null;
+        }
+
         if (BCrypt.checkpw(password, usuario.getPassword())) {
             return usuario;
         }

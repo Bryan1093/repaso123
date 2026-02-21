@@ -3,6 +3,8 @@ package uce.edu.web.api.agenda.domain;
 import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 
@@ -11,7 +13,10 @@ import jakarta.persistence.Table;
 public class Paciente {
 
     @Id
-    @Column(length = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(length = 10, nullable = false, unique = true)
     private String cedula;
 
     @Column(nullable = false)
@@ -22,6 +27,17 @@ public class Paciente {
 
     @Column(name = "fecha_nacimiento", nullable = false)
     private LocalDate fechaNacimiento;
+
+    @Column(length = 255)
+    private String direccion;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getCedula() {
         return cedula;
@@ -53,5 +69,13 @@ public class Paciente {
 
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 }

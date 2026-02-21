@@ -28,18 +28,24 @@ public class PacienteResource {
     @POST
     @Transactional
     public Response create(Paciente paciente) {
-        pacienteRepository.create(paciente);
+        paciente.setId(null); // Asegurar que sea nuevo
+        pacienteRepository.createAndFlush(paciente);
+        // Forzar flush para obtener el ID generado
+        // Aunque Panache persist() suele hacerlo, esto es más seguro para el ID
         EntityResponse<Paciente> response = new EntityResponse<>(paciente);
-        String self = uriInfo.getAbsolutePathBuilder().path(paciente.getCedula()).build().toString();
+
+        String idStr = paciente.getId() != null ? String.valueOf(paciente.getId()) : "unknown";
+        String self = uriInfo.getAbsolutePathBuilder().path(idStr).build().toString();
+
         response.addLink("self", self, "GET");
         response.addLink("collection", uriInfo.getAbsolutePathBuilder().build().toString(), "GET");
         return Response.created(URI.create(self)).entity(response).build();
     }
 
     @GET
-    @Path("/{cedula}")
-    public Response getById(@PathParam("cedula") String cedula) {
-        Paciente paciente = pacienteRepository.findByCedula(cedula);
+    @Path("/{id}")
+    public Response getById(@PathParam("id") Integer id) {
+        Paciente paciente = pacienteRepository.findById(id);
         if (paciente == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -56,8 +62,10 @@ public class PacienteResource {
         List<EntityResponse<Paciente>> result = new ArrayList<>();
         for (Paciente p : pacientes) {
             EntityResponse<Paciente> resp = new EntityResponse<>(p);
-            String self = uriInfo.getAbsolutePathBuilder().path(p.getCedula()).build().toString();
-            resp.addLink("self", self, "GET");
+            if (p.getId() != null) {
+                String self = uriInfo.getAbsolutePathBuilder().path(String.valueOf(p.getId())).build().toString();
+                resp.addLink("self", self, "GET");
+            }
             result.add(resp);
         }
         return result;
